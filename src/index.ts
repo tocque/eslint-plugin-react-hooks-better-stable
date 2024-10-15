@@ -2,17 +2,15 @@
  * @fileoverview Find and remove unused es6 modules
  * @author Mikkel Holmer Pedersen
  */
-import noUnusedVars from "./rules/no-unused-vars";
-import noUnusedImports from "./rules/no-unused-imports";
+import exhaustiveDeps from "./rules/exhaustive-deps";
 import { ESLint } from "eslint";
 
 const plugin: ESLint.Plugin = {
     meta: {
-        name: "unused-imports",
+        name: "react-hooks-better-static",
     },
     rules: {
-        "no-unused-vars": noUnusedVars,
-        "no-unused-imports": noUnusedImports,
+        "exhaustive-deps": exhaustiveDeps as any,
     },
 };
 

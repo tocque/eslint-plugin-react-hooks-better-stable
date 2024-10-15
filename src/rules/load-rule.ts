@@ -9,7 +9,7 @@ export function getBaseRule(): Rule.RuleModule {
     if (!rule) {
         try {
             const tslint = require("@typescript-eslint/eslint-plugin");
-            rule = tslint.rules["no-unused-vars"];
+            rule = tslint.rules["exhaustive-deps"];
         } catch (_) {
             rule = getESLintBaseRule();
         }
@@ -19,5 +19,5 @@ export function getBaseRule(): Rule.RuleModule {
 
 export function getESLintBaseRule() {
     const eslint = require("eslint");
-    return new eslint.Linter({ configType: "eslintrc" }).getRules().get("no-unused-vars");
+    return new eslint.Linter({ configType: "eslintrc" }).getRules().get("exhaustive-deps");
 }
