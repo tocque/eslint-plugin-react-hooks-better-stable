@@ -8,7 +8,7 @@ function normalizeIndent(strings) {
   return codeLines.map((line) => line.slice(leftPadding.length)).join('\n');
 }
 
-const tests = {
+const regressionTests = {
   valid: [
     {
       code: normalizeIndent`
@@ -1440,146 +1440,6 @@ const tests = {
             }, undefined);
           }
         `,
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent({ mapRef, ref, otherProp }) {
-            const foo = useCallback(() => {
-              console.log(mapRef.current, ref.current, otherProp);
-            }, [otherProp]);
-          }
-        `,
-      options: [
-        {
-          knownStableValues: '^.*Ref$|^ref$',
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent({ setValue, setValueReactive }) {
-            const foo = useCallback(() => {
-              setValue(42);
-              setValueReactive(42);
-            }, [setValueReactive]);
-          }
-        `,
-      options: [
-        {
-          knownStableValues: '^set(?!.*Reactive$).*$',
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent() {
-            const [foo, setFoo] = useState(0);
-            useEffect(() => {
-              setFoo(1);
-            }, []);
-          }
-        `,
-      options: [
-        {
-          markStableValuesAsUnnecessary: true,
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          const mixpanelTrackNewFolder = useCallback(
-            createMixPanelTrackingCallback('Folders.Create', {
-              component: 'FolderModal',
-              element: 'Button',
-              action: 'Click',
-            }),
-            []
-          );
-        `,
-      options: [
-        {
-          knownStableValues: '^createMixPanelTrackingCallback$',
-        },
-      ],
-    },
-    {
-      code: normalizeIndent` 
-          function MyComponent() {
-            const [foo, setFoo] = useState(0);
-            useEffect(() => {
-              setFoo(2);
-            }, []);
-          }
-        `,
-      options: [
-        {
-          checkReactiveFunctionOutputIsStable: true,
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent() {
-            const [foo, setFoo] = useState(0);
-            const func = useCallback(() => {
-              setFoo(2);
-            }, []);
-            useEffect(() => {
-              func();
-            }, []);
-          }
-        `,
-      options: [
-        {
-          checkReactiveFunctionOutputIsStable: true,
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent() {
-            const [stable1, stable2] = useCustom();
-            useEffect(() => {
-              console.log(stable1, stable2);
-            }, []);
-          }
-        `,
-      options: [
-        {
-          stableHooks: { useCustom: true },
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent() {
-            const [stable1, stable2] = useCustom();
-            useEffect(() => {
-              console.log(stable1, stable2);
-            }, [stable2]);
-          }
-        `,
-      options: [
-        {
-          stableHooks: { useCustom: [true, false] },
-        },
-      ],
-    },
-    {
-      code: normalizeIndent`
-          function MyComponent() {
-            const { stable1, stable2 } = useCustom();
-            useEffect(() => {
-              console.log(stable1, stable2);
-            }, [stable2]);
-          }
-        `,
-      options: [
-        {
-          stableHooks: { useCustom: { stable1: true, stable2: false } },
-        },
-      ],
-      only: true,
     },
   ],
   invalid: [
@@ -7783,6 +7643,80 @@ const tests = {
         },
       ],
     },
+  ],
+};
+
+const knownStableValuesTests = {
+  valid: [
+    {
+      code: normalizeIndent`
+          function MyComponent({ mapRef, ref, otherProp }) {
+            const foo = useCallback(() => {
+              console.log(mapRef.current, ref.current, otherProp);
+            }, [otherProp]);
+          }
+        `,
+      options: [
+        {
+          knownStableValues: '^.*Ref$|^ref$',
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent({ setValue, setValueReactive }) {
+            const foo = useCallback(() => {
+              setValue(42);
+              setValueReactive(42);
+            }, [setValueReactive]);
+          }
+        `,
+      options: [
+        {
+          knownStableValues: '^set(?!.*Reactive$).*$',
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          const mixpanelTrackNewFolder = useCallback(
+            createMixPanelTrackingCallback('Folders.Create', {
+              component: 'FolderModal',
+              element: 'Button',
+              action: 'Click',
+            }),
+            []
+          );
+        `,
+      options: [
+        {
+          knownStableValues: '^createMixPanelTrackingCallback$',
+        },
+      ],
+    },
+  ],
+  invalid: [],
+};
+
+const markStableValuesAsUnnecessaryTests = {
+  valid: [
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [foo, setFoo] = useState(0);
+            useEffect(() => {
+              setFoo(1);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          markStableValuesAsUnnecessary: true,
+        },
+      ],
+    },
+  ],
+  invalid: [
     {
       code: normalizeIndent`
           function MyComponent() {
@@ -7852,6 +7786,46 @@ const tests = {
         },
       ],
     },
+  ],
+};
+
+const checkReactiveFunctionOutputIsStableTests = {
+  valid: [
+    {
+      code: normalizeIndent` 
+          function MyComponent() {
+            const [foo, setFoo] = useState(0);
+            useEffect(() => {
+              setFoo(2);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          checkReactiveFunctionOutputIsStable: true,
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [foo, setFoo] = useState(0);
+            const func = useCallback(() => {
+              setFoo(2);
+            }, []);
+            useEffect(() => {
+              func();
+            }, []);
+          }
+        `,
+      options: [
+        {
+          checkReactiveFunctionOutputIsStable: true,
+        },
+      ],
+    },
+  ],
+  invalid: [
     {
       code: normalizeIndent`
         function MyComponent() {
@@ -7895,6 +7869,58 @@ const tests = {
         },
       ],
     },
+  ],
+};
+
+const stableHooksTests = {
+  valid: [
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [stable1, stable2] = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: true },
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [stable1, stable2] = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, [stable2]);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: [true, false] },
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const { stable1, stable2 } = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, [stable2]);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: { stable1: true, stable2: false } },
+        },
+      ],
+    },
+  ],
+  invalid: [
     {
       code: normalizeIndent`
           function MyComponent() {
@@ -7944,7 +7970,6 @@ const tests = {
           stableHooks: { useCustom: [true, false] },
         },
       ],
-      only: true,
       errors: [
         {
           message:
@@ -7980,7 +8005,6 @@ const tests = {
           stableHooks: { useCustom: false },
         },
       ],
-      only: true,
       errors: [
         {
           message:
@@ -8005,4 +8029,21 @@ const tests = {
   ],
 };
 
-export default tests;
+const allTests = {
+  valid: [
+    ...regressionTests.valid,
+    ...knownStableValuesTests.valid,
+    ...markStableValuesAsUnnecessaryTests.valid,
+    ...checkReactiveFunctionOutputIsStableTests.valid,
+    ...stableHooksTests.valid,
+  ],
+  invalid: [
+    ...regressionTests.invalid,
+    ...knownStableValuesTests.invalid,
+    ...markStableValuesAsUnnecessaryTests.invalid,
+    ...checkReactiveFunctionOutputIsStableTests.invalid,
+    ...stableHooksTests.invalid,
+  ],
+};
+
+export default allTests;
