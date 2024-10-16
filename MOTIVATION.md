@@ -10,7 +10,7 @@ function useMapSettings() {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [z, setZ] = useState(0);
-  return {zoom, x, y, z, setZoom, setX, setY, setZ};
+  return { zoom, x, y, z, setZoom, setX, setY, setZ };
 }
 
 function MyComponent() {
@@ -90,9 +90,11 @@ function MyComponent() {
   const [foo, setFoo] = useState(0);
 
   useEffect(() => {
-    setFoo(prev => prev + 1);
+    setFoo((prev) => prev + 1);
   }, [setFoo]); // "React Hook useEffect has an unnecessary dependency: 'setFoo'. Either exclude it or remove the dependency array."
 }
 ```
 
 This enforces dependency intent and cleanliness, making it easier to understand when hooks re-render.
+
+The `checkReactiveFunctionOutputIsStable` option allows you to specify a function that checks if the output of a reactive function is stable. This allows for more implicit stability of variables with simple `useCallback` and `useMemo` calls.
