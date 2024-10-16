@@ -1,69 +1,34 @@
-# eslint-plugin-unused-imports
+# `jcayabyab/eslint-plugin-react-hooks`
 
-Find and remove unused es6 module imports. It works by splitting up the `no-unused-vars` rule depending on it being an import statement in the AST and providing an autofix rule to remove the nodes if they are imports. This plugin composes the rule `no-unused-vars` of either the typescript or js plugin so be aware that the other plugins needs to be installed and reporting correctly for this to do so.
+This ESLint plugin adds two additional options to the original `eslint-plugin-react-hooks`:
 
-## _Versions_
+1. `knownStableValues`: If commonly-used variables are known to be stable (e.g., `dispatch` from Redux), you can specify them as RegEx.
+2. `markStableValuesAsUnnecessary`: Stable values such as `set` functions returned from `React.setState` don't do anything when included in the dependency array, this allows you to enforce that they are not included in the dependency array.
 
-- Version 4.1.x is for eslint 9 with @typescript-eslint/eslint-plugin 5 - 8
-- Version 4.0.x is for eslint 9 with @typescript-eslint/eslint-plugin 8
-- Version 3.x.x is for eslint 8 with @typescript-eslint/eslint-plugin 6 - 7
-- Version 2.x.x is for eslint 8 with @typescript-eslint/eslint-plugin 5
-- Version 1.x.x is for eslint 6 and 7.
+See [motivation](./MOTIVATION.md) for insight.
 
-## Typescript
-
-If running typescript with [@typescript-eslint](https://github.com/typescript-eslint/typescript-eslint) make sure to use both `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser`.
-
-## React
-
-If writing react code you need to install `eslint-plugin-react` and enable the two rules `react/jsx-uses-react` and `react/jsx-uses-vars`. Otherwise all imports for components will be reported unused.
+See [rules/exhaustive-deps.md](./docs/rules/exhaustive-deps.md) for more details around the extra options.
 
 ## Installation
 
-You'll first need to install [ESLint](http://eslint.org) (and [@typescript-eslint](https://github.com/typescript-eslint/typescript-eslint) if using typescript):
+```sh
+# npm
+npm install @jcayabyab/eslint-plugin-react-hooks --save-dev
 
-```bash
-npm i eslint --save-dev
+# yarn
+yarn add @jcayabyab/eslint-plugin-react-hooks --dev
 ```
 
-Next, install `eslint-plugin-unused-imports`:
-
-```bash
-npm install eslint-plugin-unused-imports --save-dev
-```
-
-**Note:** If you installed ESLint globally (using the `-g` flag) then you must also install `eslint-plugin-unused-imports` globally.
-
-## Usage
-
-Add `unused-imports` to the plugins section of your `eslint.config.js` configuration file.
+Then extend the recommended eslint config and turn off the original `eslint-plugin-react-hooks/exhaustive-deps` rule:
 
 ```js
-import unusedImports from 'eslint-plugin-unused-imports';
-
-export default [
-  {
-    plugins: {
-      'unused-imports': unusedImports,
-    },
-    rules: {
-      'no-unused-vars': 'off', // or "@typescript-eslint/no-unused-vars": "off",
-      'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': [
-        'warn',
-        {
-          vars: 'all',
-          varsIgnorePattern: '^_',
-          args: 'after-used',
-          argsIgnorePattern: '^_',
-        },
-      ],
-    },
-  },
-];
+{
+  "extends": [
+    // ...
+    "plugin:@jcayabyab/react-hooks/recommended"
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off"
+  }
+}
 ```
-
-## Supported Rules
-
-- `no-unused-imports`
-- `no-unused-vars`
