@@ -414,11 +414,19 @@ export default {
           } else if (typeof staticParts === 'object' && id.type === 'ObjectPattern') {
             // Destructured object return where some properties are static
             const property = id.properties.find(function (property) {
-              return property.key.name === resolved.identifiers[0].name;
+              // Check if the property is renamed during destructuring
+              const originalName = property.key.name;
+              const newName = property.value.name;
+              return (
+                originalName === resolved.identifiers[0].name ||
+                newName === resolved.identifiers[0].name
+              );
             });
 
             if (property) {
-              return staticParts[property.key.name];
+              // Use the original property name to check static parts
+              const propertyName = property.key.name;
+              return staticParts[propertyName];
             }
           }
         }

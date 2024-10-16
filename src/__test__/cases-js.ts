@@ -8,6 +8,7 @@ function normalizeIndent(strings) {
   return codeLines.map((line) => line.slice(leftPadding.length)).join('\n');
 }
 
+// From original repo
 const regressionTests = {
   valid: [
     {
@@ -7916,6 +7917,21 @@ const stableHooksTests = {
       options: [
         {
           stableHooks: { useCustom: { stable1: true, stable2: false } },
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const { stable: renamedStable } = useCustom();
+            useEffect(() => {
+              console.log(renamedStable);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: { stable: true } },
         },
       ],
     },
