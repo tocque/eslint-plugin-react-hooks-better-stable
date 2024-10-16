@@ -1502,6 +1502,48 @@ const tests = {
                 },
             ],
         },
+        {
+            code: normalizeIndent` 
+          const createMixPanelTrackingCallback = useCallback(() => {
+            console.log('createMixPanelTrackingCallback');
+          }, []);
+
+          const mixpanelTrackNewFolder = useCallback(
+            createMixPanelTrackingCallback('Folders.Create', { 
+              component: 'FolderModal',
+              element: 'Button',
+              action: 'Click',
+            }),
+            []
+          );
+        `,
+            options: [
+                {
+                    checkReactiveFunctionOutputIsStable: true,
+                },
+            ],
+        },
+        {
+            code: normalizeIndent`
+          const createMixPanelTrackingCallback = useCallback(() => {
+            console.log('createMixPanelTrackingCallback');
+          });
+
+          const mixpanelTrackNewFolder = useCallback(
+            createMixPanelTrackingCallback('Folders.Create', {
+              component: 'FolderModal',
+              element: 'Button',
+              action: 'Click',
+            }),
+            []
+          );
+        `,
+            options: [
+                {
+                    checkReactiveFunctionOutputIsStable: true,
+                },
+            ],
+        },
     ],
     invalid: [
         {

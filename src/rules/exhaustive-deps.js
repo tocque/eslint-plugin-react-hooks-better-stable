@@ -37,6 +37,9 @@ export default {
                     markStableValuesAsUnnecessary: {
                         type: "boolean",
                     },
+                    checkReactiveFunctionOutputIsStable: {
+                        type: "boolean",
+                    },
                 },
             },
         ],
@@ -64,11 +67,17 @@ export default {
             context.options[0] &&
             context.options[0].markStableValuesAsUnnecessary;
 
+        const checkReactiveFunctionOutputIsStable =
+            context.options &&
+            context.options[0] &&
+            context.options[0].checkReactiveFunctionOutputIsStable;
+
         const options = {
             additionalHooks,
             enableDangerousAutofixThisMayCauseInfiniteLoops,
             knownStableValues,
             markStableValuesAsUnnecessary,
+            checkReactiveFunctionOutputIsStable,
         };
 
         function reportProblem(problem) {
@@ -326,6 +335,39 @@ export default {
                             return true;
                         }
                     }
+                    // from: https://github.com/wogns3623/eslint-plugin-better-exhaustive-deps/blob/master/lib/rules/BetterExhaustiveDeps.js
+                } else if (
+                    options.checkReactiveFunctionOutputIsStable &&
+                    (name === "useMemo" || name === "useCallback")
+                ) {
+                    // Check memoized value is stable
+                    // useMemo(() => { ... }, []) / useCallback((...) => { ... }, [])
+                    const hookArgs = callee.parent.arguments;
+
+                    // Check it has dependency list
+                    if (hookArgs.length < 2) return false;
+
+                    const dependencies = hookArgs[1].elements;
+                    if (dependencies.length === 0) {
+                        // No dependencies, so it's stable
+                        return true;
+                    }
+
+                    // Check all dependencies are stable
+                    for (const dependencyNode of dependencies) {
+                        const dependencyReference = resolved.scope.references.find(
+                            (reference) => reference.identifier === dependencyNode,
+                        );
+                        if (
+                            dependencyReference !== undefined &&
+                            memoizedIsStableKnownHookValue(dependencyReference.resolved)
+                        ) {
+                            continue;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
                 // By default assume it's dynamic.
                 return false;
