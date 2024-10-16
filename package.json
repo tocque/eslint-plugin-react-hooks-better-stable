@@ -1,9 +1,9 @@
 {
-    "name": "eslint-plugin-react-hooks-better-static",
+    "name": "eslint-plugin-react-hooks-better-stable",
     "version": "4.1.4",
     "type": "commonjs",
     "packageManager": "pnpm@9.10.0",
-    "description": "Report and remove unused es6 modules",
+    "description": "react-hooks/exhaustive-deps with more customization for stable references",
     "keywords": [
         "eslint",
         "eslintplugin",
@@ -96,8 +96,8 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/jcayabyab/eslint-plugin-react-hooks-better-static.git"
+        "url": "git+https://github.com/jcayabyab/eslint-plugin-react-hooks-better-stable.git"
     },
-    "homepage": "https://github.com/jcayabyab/eslint-plugin-react-hooks-better-static",
-    "bugs": "https://github.com/jcayabyab/eslint-plugin-react-hooks-better-static/issues"
+    "homepage": "https://github.com/jcayabyab/eslint-plugin-react-hooks-better-stable",
+    "bugs": "https://github.com/jcayabyab/eslint-plugin-react-hooks-better-stable/issues"
 }

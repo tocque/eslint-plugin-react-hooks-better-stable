@@ -7,7 +7,7 @@ import { ESLint } from "eslint";
 
 const plugin: ESLint.Plugin = {
     meta: {
-        name: "react-hooks-better-static",
+        name: "react-hooks-better-stable",
     },
     rules: {
         "exhaustive-deps": exhaustiveDeps as any,

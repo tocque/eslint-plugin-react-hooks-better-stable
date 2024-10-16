@@ -15,7 +15,7 @@ export default {
         docs: {
             description: "verifies the list of dependencies for Hooks like useEffect and similar",
             recommended: true,
-            url: "https://github.com/jcayabyab/eslint-plugin-react-hooks-better-static/README.md",
+            url: "https://github.com/jcayabyab/eslint-plugin-react-hooks-better-stable/README.md",
         },
         fixable: "code",
         hasSuggestions: true,
