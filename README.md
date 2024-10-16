@@ -1,4 +1,4 @@
-# `jcayabyab/eslint-plugin-react-hooks`
+# `eslint-plugin-react-hooks-better-stable`
 
 This ESLint plugin adds two additional options to the original `eslint-plugin-react-hooks`:
 
