@@ -1535,6 +1535,52 @@ const tests = {
         },
       ],
     },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [stable1, stable2] = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: true },
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [stable1, stable2] = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, [stable2]);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: [true, false] },
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const { stable1, stable2 } = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, [stable2]);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: { stable1: true, stable2: false } },
+        },
+      ],
+      only: true,
+    },
   ],
   invalid: [
     {
@@ -7844,6 +7890,113 @@ const tests = {
                   }, [func]);
                 }
                 `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const { stable1, stable2 } = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, [stable2]);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: { stable1: false, stable2: false } },
+        },
+      ],
+      errors: [
+        {
+          message:
+            "React Hook useEffect has a missing dependency: 'stable1'. " +
+            'Either include it or remove the dependency array.',
+          suggestions: [
+            {
+              desc: 'Update the dependencies array to be: [stable1, stable2]',
+              output: normalizeIndent`
+                  function MyComponent() {
+                    const { stable1, stable2 } = useCustom();
+                    useEffect(() => {
+                      console.log(stable1, stable2);
+                    }, [stable1, stable2]);
+                  }
+                  `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const [ stable1, stable2 ] = useCustom();
+            useEffect(() => {
+              console.log(stable1, stable2);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: [true, false] },
+        },
+      ],
+      only: true,
+      errors: [
+        {
+          message:
+            "React Hook useEffect has a missing dependency: 'stable2'. " +
+            'Either include it or remove the dependency array.',
+          suggestions: [
+            {
+              desc: 'Update the dependencies array to be: [stable2]',
+              output: normalizeIndent`
+                  function MyComponent() {
+                    const [ stable1, stable2 ] = useCustom();
+                    useEffect(() => {
+                      console.log(stable1, stable2);
+                    }, [stable2]);
+                  }
+                  `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+          function MyComponent() {
+            const stable1 = useCustom();
+            useEffect(() => {
+              console.log(stable1);
+            }, []);
+          }
+        `,
+      options: [
+        {
+          stableHooks: { useCustom: false },
+        },
+      ],
+      only: true,
+      errors: [
+        {
+          message:
+            "React Hook useEffect has a missing dependency: 'stable1'. " +
+            'Either include it or remove the dependency array.',
+          suggestions: [
+            {
+              desc: 'Update the dependencies array to be: [stable1]',
+              output: normalizeIndent`
+                  function MyComponent() {
+                    const stable1 = useCustom();
+                    useEffect(() => {
+                      console.log(stable1);
+                    }, [stable1]);
+                  }
+                  `,
             },
           ],
         },

@@ -40,6 +40,28 @@ export default {
           checkReactiveFunctionOutputIsStable: {
             type: 'boolean',
           },
+          stableHooks: {
+            type: 'object',
+            additionalProperties: {
+              oneOf: [
+                {
+                  type: 'boolean',
+                },
+                {
+                  type: 'array',
+                  items: {
+                    type: 'boolean',
+                  },
+                },
+                {
+                  type: 'object',
+                  additionalProperties: {
+                    type: 'boolean',
+                  },
+                },
+              ],
+            },
+          },
         },
       },
     ],
@@ -70,12 +92,18 @@ export default {
       context.options[0] &&
       context.options[0].checkReactiveFunctionOutputIsStable;
 
+    const stableHooks =
+      context.options && context.options[0] && context.options[0].stableHooks
+        ? context.options[0].stableHooks
+        : {};
+
     const options = {
       additionalHooks,
       enableDangerousAutofixThisMayCauseInfiniteLoops,
       knownStableValues,
       markStableValuesAsUnnecessary,
       checkReactiveFunctionOutputIsStable,
+      stableHooks,
     };
 
     function reportProblem(problem) {
@@ -360,6 +388,39 @@ export default {
             }
           }
           return true;
+          // from: https://github.com/stoikio/eslint-plugin-react-hooks-static-deps/blob/335c8dd20dfb44ff05aa2170c873f35eb254c2df/src/index.js#L358-L385
+        } else if (options.stableHooks[name]) {
+          const staticParts = options.stableHooks[name];
+
+          if (staticParts === true) {
+            // Entire return value is static
+            return true;
+          } else if (Array.isArray(staticParts)) {
+            // Destructured tuple return where some elements are static
+            if (
+              id.type === 'ArrayPattern' &&
+              id.elements.length <= staticParts.length &&
+              Array.isArray(resolved.identifiers)
+            ) {
+              // Find index of the resolved identifier in the array pattern
+              const idx = id.elements.findIndex(function (identifier) {
+                return identifier === resolved.identifiers[0];
+              });
+
+              if (idx >= 0) {
+                return staticParts[idx];
+              }
+            }
+          } else if (typeof staticParts === 'object' && id.type === 'ObjectPattern') {
+            // Destructured object return where some properties are static
+            const property = id.properties.find(function (property) {
+              return property.key.name === resolved.identifiers[0].name;
+            });
+
+            if (property) {
+              return staticParts[property.key.name];
+            }
+          }
         }
         // By default assume it's dynamic.
         return false;
