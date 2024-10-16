@@ -1504,18 +1504,12 @@ const tests = {
     },
     {
       code: normalizeIndent` 
-          const createMixPanelTrackingCallback = useCallback(() => {
-            console.log('createMixPanelTrackingCallback');
-          }, []);
-
-          const mixpanelTrackNewFolder = useCallback(
-            createMixPanelTrackingCallback('Folders.Create', { 
-              component: 'FolderModal',
-              element: 'Button',
-              action: 'Click',
-            }),
-            []
-          );
+          function MyComponent() {
+            const [foo, setFoo] = useState(0);
+            useEffect(() => {
+              setFoo(2);
+            }, []);
+          }
         `,
       options: [
         {
@@ -1525,18 +1519,15 @@ const tests = {
     },
     {
       code: normalizeIndent`
-          const createMixPanelTrackingCallback = useCallback(() => {
-            console.log('createMixPanelTrackingCallback');
-          });
-
-          const mixpanelTrackNewFolder = useCallback(
-            createMixPanelTrackingCallback('Folders.Create', {
-              component: 'FolderModal',
-              element: 'Button',
-              action: 'Click',
-            }),
-            []
-          );
+          function MyComponent() {
+            const [foo, setFoo] = useState(0);
+            const func = useCallback(() => {
+              setFoo(2);
+            }, []);
+            useEffect(() => {
+              func();
+            }, []);
+          }
         `,
       options: [
         {
@@ -7810,6 +7801,49 @@ const tests = {
                       }, []);
                     }
                   `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: normalizeIndent`
+        function MyComponent() {
+          const [foo, setFoo] = useState(0);
+          const func = useCallback(() => {
+            console.log(foo);
+          }, [foo]);
+
+          const mixpanelTrackNewFolder = useCallback(() => {
+            func();
+          }, []);
+        }
+        `,
+      options: [
+        {
+          checkReactiveFunctionOutputIsStable: true,
+        },
+      ],
+      errors: [
+        {
+          message:
+            "React Hook useCallback has a missing dependency: 'func'. " +
+            'Either include it or remove the dependency array.',
+          suggestions: [
+            {
+              desc: 'Update the dependencies array to be: [func]',
+              output: normalizeIndent`
+                function MyComponent() {
+                  const [foo, setFoo] = useState(0);
+                  const func = useCallback(() => {
+                    console.log(foo);
+                  }, [foo]);
+
+                  const mixpanelTrackNewFolder = useCallback(() => {
+                    func();
+                  }, [func]);
+                }
+                `,
             },
           ],
         },
