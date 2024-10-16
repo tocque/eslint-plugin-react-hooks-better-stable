@@ -9,6 +9,11 @@ const parsers = [
     parser: require('@babel/eslint-parser'),
     rule: exhaustiveDeps,
   },
+  {
+    name: 'typescript-eslint v8',
+    parser: require('@typescript-eslint/parser'),
+    rule: exhaustiveDeps,
+  },
 ];
 
 for (const { name, parser, rule } of parsers) {
@@ -17,6 +22,11 @@ for (const { name, parser, rule } of parsers) {
       parser,
       ecmaVersion: 2020,
       sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
   });
 
