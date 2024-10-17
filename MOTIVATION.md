@@ -44,7 +44,7 @@ When using `knownStableValues`, you can specify commonly-used variables that are
 ```js
 {
   "rules": {
-    "@jcayabyab/react-hooks/exhaustive-deps": ["warn", {
+    "react-hooks-exhaustive-deps-better-stable/exhaustive-deps": ["warn", {
       "knownStableValues": "^(set.*)$"
     }]
   }
@@ -75,7 +75,7 @@ Furthermore, the `markStableValuesAsUnnecessary` option allows you to mark stabl
 ```js
 {
   "rules": {
-    "@jcayabyab/react-hooks/exhaustive-deps": ["warn", {
+    "react-hooks-exhaustive-deps-better-stable/exhaustive-deps": ["warn", {
       "knownStableValues": "^(set.*)$",
       "markStableValuesAsUnnecessary": true
     }]

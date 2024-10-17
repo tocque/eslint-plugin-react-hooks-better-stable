@@ -15,10 +15,10 @@ See [rules/exhaustive-deps.md](./docs/rules/exhaustive-deps.md) for more details
 
 ```sh
 # npm
-npm install @jcayabyab/eslint-plugin-react-hooks --save-dev
+npm install eslint-plugin-react-hooks-exhaustive-deps-better-stable --save-dev
 
 # yarn
-yarn add @jcayabyab/eslint-plugin-react-hooks --dev
+yarn add eslint-plugin-react-hooks-exhaustive-deps-better-stable --dev
 ```
 
 Then extend the recommended eslint config and turn off the original `eslint-plugin-react-hooks/exhaustive-deps` rule:
@@ -27,7 +27,7 @@ Then extend the recommended eslint config and turn off the original `eslint-plug
 {
   "extends": [
     // ...
-    "plugin:@jcayabyab/react-hooks/recommended"
+    "plugin:react-hooks-exhaustive-deps-better-stable/recommended"
   ],
   "rules": {
     "react-hooks/exhaustive-deps": "off"

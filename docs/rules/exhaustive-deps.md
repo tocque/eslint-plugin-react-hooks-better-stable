@@ -13,7 +13,7 @@ Here is an example of how to use the `knownStableValues` option:
 ```js
 {
   "rules": {
-    "@jcayabyab/react-hooks/exhaustive-deps": ["warn", {
+    "react-hooks-exhaustive-deps-better-stable/exhaustive-deps": ["warn", {
       "knownStableValues": "^(dispatch|createMixPanelTrackingCallback)$"
     }]
   }
@@ -58,7 +58,7 @@ Here is an example of how to use the `markStableValuesAsUnnecessary` option:
 ```js
 {
   "rules": {
-    "@jcayabyab/react-hooks/exhaustive-deps": ["warn", {
+    "react-hooks-exhaustive-deps-better-stable/exhaustive-deps": ["warn", {
       "markStableValuesAsUnnecessary": true
     }]
   }
@@ -100,7 +100,7 @@ Here is an example of how to use the `checkReactiveFunctionOutputIsStable` optio
 ```js
 {
   "rules": {
-    "@jcayabyab/react-hooks/exhaustive-deps": ["warn", {
+    "react-hooks-exhaustive-deps-better-stable/exhaustive-deps": ["warn", {
       "checkReactiveFunctionOutputIsStable": true
     }]
   }
@@ -148,7 +148,7 @@ Here is an example of how to use the `stableHooks` option:
 ```js
 {
   "rules": {
-    "@jcayabyab/react-hooks/exhaustive-deps": ["warn", {
+    "react-hooks-exhaustive-deps-better-stable/exhaustive-deps": ["warn", {
       "stableHooks": {
         "useCustomArray": [true, false]
 				"useCustomHook": true,
